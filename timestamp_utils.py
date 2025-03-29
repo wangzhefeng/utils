@@ -12,14 +12,17 @@
 # ***************************************************
 
 # python libraries
-from typing import Union
+import os
+import sys
+ROOT = str(os.getcwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 import pytz
+from typing import Union
 from datetime import datetime
 
 # global variable
 LOGGING_LABEL = __file__.split('/')[-1][:-3]
-
-
 
 
 def to_unix_time(dt: Union[str, datetime], dt_format: str = '%Y-%m-%d %H:%M:%S') -> int:
