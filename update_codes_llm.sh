@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # cd project directory
-cd .
+cd E:/projects/llm_projects/TinyLLM
 
 # activate virtual environment
 source .venv/Scripts/activate
