@@ -28,12 +28,6 @@ LOGGING_LABEL = __file__.split('/')[-1][:-3]
 def load_json_config(config_filename):
     """
     读取项目配置参数
-
-    Args:
-        config_filename (_type_): _description_
-
-    Returns:
-        _type_: _description_
     """
     # json 配置文件所在路径
     cfg_dir = os.path.dirname(__file__)
