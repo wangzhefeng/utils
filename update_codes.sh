@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # cd project directory
-# cd .
+cd E:/projects/utils
 
 # activate virtual environment
 source .venv/Scripts/activate
