@@ -14,16 +14,15 @@
 # python libraries
 import os
 import sys
-ROOT = os.getcwd()
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))
+ROOT = str(os.getcwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 import warnings
+warnings.filterwarnings("ignore")
 
 import matplotlib.pyplot as plt
-
 plt.rcParams['font.sans-serif']=['SimHei']    # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False    # 用来显示负号
-warnings.filterwarnings("ignore")
 
 # global variable
 LOGGING_LABEL = __file__.split('/')[-1][:-3]
