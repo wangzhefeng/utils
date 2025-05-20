@@ -57,7 +57,7 @@ def filter_number(input_str):
 
 # 测试代码 main 函数
 def main():
-    input_str = "A 路 200001.0 and 1.2"
+    input_str = "5min"
     print(filter_zh(input_str))
     print(filter_integer(input_str))
     print(filter_number(input_str))
