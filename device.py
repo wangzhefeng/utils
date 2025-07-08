@@ -50,7 +50,7 @@ def device_setting(verbose: bool = False):
         gpu = torch.cuda.current_device()
         # torch.cuda.set_device(0)
         device = torch.device(f"cuda:{gpu}")
-    elif torch.backends.mps.is_available():
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
         device = torch.device("mps")
     else:
         device = torch.device("cpu")
