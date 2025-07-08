@@ -17,10 +17,12 @@ __all__ = []
 # python libraries
 import os
 import sys
-ROOT = str(os.getcwd())
+from pathlib import Path
+ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
 import math
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,7 +33,7 @@ from utils.log_util import logger
 plt.switch_backend('agg')
 
 # global variable
-LOGGING_LABEL = __file__.split('/')[-1][:-3]
+LOGGING_LABEL = Path(__file__).name[:-3]
 
 
 def adjust_learning_rate(optimizer, epoch, args):
@@ -159,7 +161,7 @@ class EarlyStopping:
 #         if self.verbose:
 #             print(f"Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...")
 #         # checkpoint 保存
-#         paddle.save(model.state_dict(), os.path.join(path, "/checkpoint.pth"))
+#         paddle.save(model.state_dict(), Path(path).joinpath("checkpoint.pth"))
 #         # 更新最小验证损失
 #         self.val_loss_min = val_loss
 

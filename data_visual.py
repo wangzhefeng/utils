@@ -27,7 +27,8 @@
 # python libraries
 import os
 import sys
-ROOT = str(os.getcwd())
+from pathlib import Path
+ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
 from typing import List, Tuple, Union
@@ -59,7 +60,7 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来显示负号
 plt.rcParams["font.family"].append("SimHei")  # 处理 matplotlib 字体问题
 
 # global variable
-LOGGING_LABEL = __file__.split('/')[-1][:-3]
+LOGGING_LABEL = Path(__file__).name[:-3]
 
 
 def plot_array_curve(data_list: List, ycol: str, title: str):

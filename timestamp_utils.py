@@ -14,7 +14,8 @@
 # python libraries
 import os
 import sys
-ROOT = str(os.getcwd())
+from pathlib import Path
+ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
 import pytz
@@ -22,7 +23,7 @@ from typing import Union
 from datetime import datetime
 
 # global variable
-LOGGING_LABEL = __file__.split('/')[-1][:-3]
+LOGGING_LABEL = Path(__file__).name[:-3]
 
 
 def to_unix_time(dt: Union[str, datetime], dt_format: str = '%Y-%m-%d %H:%M:%S') -> int:
