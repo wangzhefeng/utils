@@ -14,15 +14,13 @@
 __all__ = []
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
-from warnings import simplefilter
-simplefilter("ignore")
-from pathlib import Path
+import warnings
+warnings.filterwarnings("ignore")
 
 import numpy as np
 import pandas as pd

@@ -31,10 +31,9 @@ from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
+from typing import List, Tuple, Union
 import warnings
 warnings.filterwarnings("ignore")
-from pathlib import Path
-from typing import List, Tuple, Union
 
 import numpy as np
 import pandas as pd

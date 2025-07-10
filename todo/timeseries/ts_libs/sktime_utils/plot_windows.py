@@ -16,6 +16,10 @@
 # python libraries
 import os
 import sys
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 
 from warnings import simplefilter
 
@@ -23,7 +27,6 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]

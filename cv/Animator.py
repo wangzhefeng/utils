@@ -12,10 +12,15 @@
 # ***************************************************
 
 # python libraries
+import sys
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 from IPython import display
 from matplotlib import pyplot as plt
 
-from plt_config import use_svg_display, set_axes
+from utils.visual.plt_config import use_svg_display, set_axes
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]

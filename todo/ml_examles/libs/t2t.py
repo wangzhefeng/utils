@@ -16,7 +16,8 @@ __all__ = []
 # python libraries
 import os
 import sys
-ROOT = os.getcwd()
+from pathlib import Path
+ROOT = str(Path.cwd())
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 

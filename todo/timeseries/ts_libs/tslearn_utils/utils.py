@@ -16,13 +16,18 @@
 # python libraries
 import os
 import sys
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
+
 from tslearn.utils import to_time_series
 from tslearn.utils import to_time_series_dataset
 from tslearn.datasets import UCR_UEA_datasets
 
-
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
+
 
 # ------------------------------
 # 

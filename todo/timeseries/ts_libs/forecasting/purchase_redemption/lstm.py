@@ -33,7 +33,7 @@ np.random.seed(2022)
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
-GLOBAL_VARIABLE = None
+
 
 
 class RNNModel:
