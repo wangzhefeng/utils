@@ -12,13 +12,15 @@
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
 # ***************************************************
 
-
 # python libraries
 import os
 import sys
-from typing import Any, Iterator
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 from mmap import mmap
-
+from typing import Any, Iterator
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]

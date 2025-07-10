@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-
-# *********************************************
+# ***************************************************
+# * File        : collections_demo.py
 # * Author      : Zhefeng Wang
-# * Email       : wangzhefengr@163.com
-# * Date        : 2022.01.07
-# * Version     : 1.0.0
+# * Email       : zfwang7@gmail.com
+# * Date        : 2025-07-10
+# * Version     : 1.0.071017
 # * Description : collections 库
 # *                1.namedtuple()
 # *                2.deque
@@ -18,53 +18,27 @@
 # *                9.UserString
 # * Link        : link
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
-# **********************************************
+# ***************************************************
 
+__all__ = []
 
 # python libraries
 import os
 import sys
-
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
+import warnings
+warnings.filterwarnings("ignore")
 
 # global variable
-GLOBAL_VARIABLE = None
+LOGGING_LABEL = Path(__file__).name[:-3]
+os.environ['LOG_NAME'] = LOGGING_LABEL
+from utils.log_util import logger
 
 
-def func():
-    pass
 
-
-class DemoClass:
-    """
-    类说明文档
-    """
-    _class_config_param = 100  # 类私有不变量
-    
-    def __init__(self, id_):
-        self.id = id_
-        self.param_a = None  # 类公开变量
-        self._internal_param = None  # 类私有变量
-    
-    def ClassDemoFunc(self):
-        """
-        类普通方法
-        """
-        pass
-    
-    def _ClassPrivateFunc(self):
-        """
-        类私有方法
-        """
-        pass
-
-
-class _PrivateDemoClass:
-    """
-    私有类
-    """
-    
-    def __init__(self):
-        pass
 
 
 
@@ -73,7 +47,5 @@ class _PrivateDemoClass:
 def main():
     pass
 
-
 if __name__ == "__main__":
     main()
-

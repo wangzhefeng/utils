@@ -16,8 +16,8 @@ import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 import glob
 import pickle
 import re

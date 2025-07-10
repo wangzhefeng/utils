@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 # ***************************************************
 # * File        : file_glob_search.py
 # * Author      : Zhefeng Wang
@@ -12,36 +11,31 @@
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
 # ***************************************************
 
-
 # python libraries
 import os
 import sys
-
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
+import argparse
 import glob
 import fnmatch
-import argparse
 import pathlib
-import argparse
 from typing import List
-
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
-def search_folder(path, 
-                  extension, # TODO 一次搜索多个扩展名 
-                  file_size: List = None,  # TODO 对文件大小的范围进行过滤
-                  ):
+def search_folder(path : str, extension: str, file_size: List = None):
     """
     Search folder for files
-
-    :param path: _description_
-    :type path: _type_
-    :param extension: _description_
-    :type extension: _type_
-    :param file_size: _description_, defaults to None
-    :type file_size: _type_, optional
+    
+    Args:
+        path (str): file path
+        extension (str): 一次搜索多个扩展名
+        file_size (List, optional): 对文件大小的范围进行过滤. Defaults to None.
     """
     folder = pathlib.Path(path)
     files = list(folder.rglob(f"*.{extension}"))
@@ -82,7 +76,5 @@ def arg_parser():
 def main():
     arg_parser()
 
-
 if __name__ == "__main__":
     main()
-

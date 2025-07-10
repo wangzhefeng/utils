@@ -1,4 +1,15 @@
-[TOC]
+<details><summary>目录</summary><p>
+
+- [Python 自动化报表](#python-自动化报表)
+    - [Python Excel 库](#python-excel-库)
+    - [xlrd](#xlrd)
+        - [xlrd 安装](#xlrd-安装)
+        - [xlrd 单元格数据类型](#xlrd-单元格数据类型)
+        - [xlrd 使用](#xlrd-使用)
+    - [xlwt](#xlwt)
+        - [xlwt 安装](#xlwt-安装)
+        - [xlwt 使用](#xlwt-使用)
+</p></details><p></p>
 
 # Python 自动化报表
 
@@ -59,24 +70,3 @@ import xlwt
 ### xlwt 使用
 
 - TODO
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

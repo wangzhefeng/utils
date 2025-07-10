@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 # ***************************************************
 # * File        : utils_datetime.py
 # * Author      : Zhefeng Wang
@@ -12,32 +11,10 @@
 # * Requirement : https://docs.python.org/3.7/library/datetime.html#module-datetime
 # ***************************************************
 
-
 # python libraries
-import os
-import sys
-
-
-
-
-
-
-
-# 测试代码 main 函数
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
-
-
-
-
-# TODO 整理
-from datetime import datetime, timedelta
-from datetime import timezone
 import re
+from datetime import datetime, timedelta, timezone
+
 
 # ==========================================================
 # Main functions
@@ -79,8 +56,8 @@ print(dt.timestamp())
 
 # timestamp 转换为 datetime
 t = 1429417200.0
-print(datetime.fromtimestamp(t))    # 当地时间（北京）
-print(datetime.utcfromtimestamp(t)) # 格林威治标准时间
+print(datetime.fromtimestamp(t))  # 当地时间（北京）
+print(t.fromtimestamp(timezone.utc))  # 格林威治标准时间
 
 # =============================
 # datetime vs str
@@ -108,7 +85,7 @@ dt = now.replace(tzinfo = tz_utc_8)
 print(dt)
 
 # 时区转换
-utc_dt = datetime.utcnow().replace(tzinfo = timezone.utc)
+utc_dt = datetime.now(timezone.utc).replace(tzinfo = timezone.utc)
 print(utc_dt)
 bj_dt = utc_dt.astimezone(timezone(timedelta(hours = 8)))
 print(bj_dt)
@@ -134,3 +111,13 @@ print(t1)
 t2 = to_timestamp('2015-5-31 16:10:30', 'UTC-09:00')
 # assert t2 == 1433121030.0, t2
 print(t2)
+
+
+
+
+# 测试代码 main 函数
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()

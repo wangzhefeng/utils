@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 # ***************************************************
 # * File        : utils_xlrd_xlwt.py
 # * Author      : Zhefeng Wang
@@ -12,10 +11,13 @@
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
 # ***************************************************
 
-
 # python libraries
 import os
 import sys
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 from typing import Any, List
 
 import numpy as np
@@ -23,7 +25,6 @@ import pandas as pd
 import xlrd
 import xlwt
 import win32com
-
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
@@ -274,14 +275,11 @@ class ExcelPanda:
 
 
 
-
 # 测试代码 main 函数
 def main():
     print(FILE_PATH)
     print(DATA_PATH)
     print(os.path.realpath(__file__))
 
-
 if __name__ == "__main__":
     main()
-
