@@ -9,7 +9,6 @@
 # * Description : description
 # * Link        : link
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
-# * TODO        : 1.
 # ***************************************************
 
 __all__ = []
@@ -22,7 +21,6 @@ ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
 import math
-
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -161,7 +159,7 @@ class EarlyStopping:
 #         if self.verbose:
 #             print(f"Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...")
 #         # checkpoint 保存
-#         paddle.save(model.state_dict(), Path(path).joinpath("checkpoint.pth"))
+#         paddle.save(model.state_dict(), Path(path).joinpath("checkpoint.pth")
 #         # 更新最小验证损失
 #         self.val_loss_min = val_loss
 
