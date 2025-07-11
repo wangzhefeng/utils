@@ -4,24 +4,15 @@
 # Python会在每次加载文件时 重新生成字节码. 
 
 
-
-# ----------------------------------------------
-# 禁止、删除在执行 .py 文件时生成 .pyc 文件的两种方法
-# ----------------------------------------------
-
-
-# 禁止在开发中生成 __pycache__/.pyc 文件
+# 禁止在执行 .py 文件时生成 __pycache__/.pyc 文件
 # vim ~/.profile
 # export PYTHONDONTWRITEBYTECODE=1
 
-
-# 删除全部 __pycache__, .pyc 文件
+# 删除全部 __pycache__/.pyc 文件
 sudo find . -type f -name "*.py[co]" -delete -or -type d -name "__pycache__" -delete 
-
 
 # ----------------------------------------------
 # 不要在源代码仓库中加入 .pyc 文件
-# ----------------------------------------------
 # vim .gitignore
-*.py[cod]     # 将匹配 .pyc、.pyo 和 .pyd文件
-__pycache__/  # 排除整个文件夹
+# *.py[cod]     # 将匹配 .pyc、.pyo 和 .pyd文件
+# __pycache__/  # 排除整个文件夹

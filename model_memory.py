@@ -14,7 +14,6 @@
 __all__ = []
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -31,7 +30,8 @@ from utils.log_util import logger
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
-def model_memory_size(model, input_dtype=torch.float32, verbose:bool=False):
+'''
+def model_memory_size(model, input_dtype=torch.float32, verbose:bool=True):
     """
     calculate the memory requirements for this model
     """
@@ -53,8 +53,8 @@ def model_memory_size(model, input_dtype=torch.float32, verbose:bool=False):
         for buffer in model.buffers()
     ])
     if verbose:
-        logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
-        # logger.info(f"Total number of parameters: {total_params + total_grads + total_buffers}.")
+        # logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
+        logger.info(f"Total number of parameters: {(total_params + total_grads + total_buffers) / 1e6:.2f}M.")
 
     # Size in bytes = (Number of elements) * (Size of each element in bytes)
     # assume parameters and gradients are stored in the same type as input dtype
@@ -66,9 +66,10 @@ def model_memory_size(model, input_dtype=torch.float32, verbose:bool=False):
         logger.info(f"Model memory used size: {total_memory_gb:.2f}GB.")
 
     return total_memory_gb
+'''
 
 
-def model_memory_size(model, input_dtype=torch.float32):
+def model_memory_size(model, input_dtype=torch.float32, verbose:bool=True):
     total_params = 0
     total_grads = 0
     for param in model.parameters():
@@ -81,7 +82,10 @@ def model_memory_size(model, input_dtype=torch.float32):
 
     # Calculate buffer size (non-parameters that require memory)
     total_buffers = sum(buf.numel() for buf in model.buffers())
-
+    if verbose:
+        # logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
+        logger.info(f"Total number of parameters: {(total_params + total_grads + total_buffers) / 1e6:.2f}M.")
+        
     # Size in bytes = (Number of elements) * (Size of each element in bytes)
     # We assume parameters and gradients are stored in the same type as input dtype
     element_size = torch.tensor(0, dtype=input_dtype).element_size()
@@ -89,15 +93,47 @@ def model_memory_size(model, input_dtype=torch.float32):
 
     # Convert bytes to gigabytes
     total_memory_gb = total_memory_bytes / (1024**3)
+    if verbose:
+        logger.info(f"Model memory used size: {total_memory_gb:.2f}GB.")
 
     return total_memory_gb
 
 
 
 
+
 # 测试代码 main 函数
 def main():
-    pass
+    dtype_float_64 = torch.float64
+    dtype_float_32 = torch.float32
+    dtype_float_16 = torch.float16
+    dtype_float_default = torch.float
+    dtype_int_64 = torch.int64
+    dtype_int_32 = torch.int32
+    dtype_int_16 = torch.int16
+    dtype_int_8 = torch.int8
+    dtype_uint_8 = torch.uint8
+    dtype_int_default = torch.int
+    element_size = torch.tensor(0.0, dtype=dtype_float_64).element_size()
+    logger.info(f"torch.float64 element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_float_32).element_size()
+    logger.info(f"torch.float32 element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_float_16).element_size()
+    logger.info(f"torch.float16 element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_float_default).element_size()
+    logger.info(f"torch.float[default] element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_int_64).element_size()
+    logger.info(f"torch.int64 element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_int_32).element_size()
+    logger.info(f"torch.int32 element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_int_16).element_size()
+    logger.info(f"torch.int16 element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_int_8).element_size()
+    logger.info(f"torch.int8 element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_uint_8).element_size()
+    logger.info(f"torch.uint element size: {element_size}")
+    element_size = torch.tensor(0.0, dtype=dtype_int_default).element_size()
+    logger.info(f"torch.int[default] element size: {element_size}")
 
 if __name__ == "__main__":
     main()

@@ -33,7 +33,7 @@ from utils.log_util import logger
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
-def time_delay_embedding(series: pd.Series, n_lags: int, horizon: int, return_Xy: bool = False):
+def time_delay_embedding(series: pd.Series, lags: int, return_Xy: bool = False):
     """
     Time delay embedding
     Time series for supervised learning
@@ -53,8 +53,9 @@ def time_delay_embedding(series: pd.Series, n_lags: int, horizon: int, return_Xy
     else:
         name = series.name
     # create features
-    n_lags_iter = list(range(n_lags, -horizon, -1))
-    # TODO n_lags_iter = lags
+    # n_lags_iter = list(range(n_lags, -horizon, -1))
+    # logger.info(f"n_lags_iter: {n_lags_iter}")
+    n_lags_iter = lags
     df_list = [series.shift(i) for i in n_lags_iter]
     df = pd.concat(df_list, axis=1).dropna()
     # features rename
@@ -135,7 +136,7 @@ def extend_lag_feature_univariate(df: pd.DataFrame, target: str, lags: List):
     return df, lag_features 
 
 
-def extend_lag_feature_multivariate(df, target, exogenous_features, n_lags):
+def extend_lag_feature_multivariate(df, target, exogenous_features, lags):
     """
     添加滞后特征
     """
@@ -146,7 +147,7 @@ def extend_lag_feature_multivariate(df, target, exogenous_features, n_lags):
     for col in exogenous_features + [target]:
         col_df = time_delay_embedding(
             series=df[col], 
-            n_lags=n_lags, 
+            lags=lags, 
         )
         lagged_features_ds.append(col_df)
     lagged_features_df = pd.concat(lagged_features_ds, axis=1).dropna()
@@ -162,7 +163,6 @@ def extend_lag_feature_multivariate(df, target, exogenous_features, n_lags):
         if col.__contains__("(t+")
     ]
     # 数据合并
-    df = df.reset_index()
     df = lagged_features_df.merge(df, on = "ds", how = "left")
     # 特征分割
     # pred_vars_1 = lagged_features_df.columns.str.contains(r"\(t\-")
@@ -211,7 +211,7 @@ def extend_datetime_feature(df: pd.DataFrame, feature_names: str):
     return df, datetime_features
 
 
-def extend_datetype_feature(df_history: pd.DataFrame, df_date: pd.DataFrame):
+def extend_date_type_feature(df_history: pd.DataFrame, df_date: pd.DataFrame):
     """
     增加日期类型特征：
     1-工作日 2-非工作日 3-删除计算日 4-元旦 5-春节 6-清明节 7-劳动节 8-端午节 9-中秋节 10-国庆节
@@ -380,17 +380,17 @@ def main():
    
     """
     # ------------------------------
-    # extend_datetime_stamp_feature
+    # extend_datetime_feature
     # ------------------------------
     df_future = pd.DataFrame({"ds": pd.date_range(start=now_time, end=future_time, freq=freq, inclusive="left")}) 
     
-    df1 = extend_datetime_stamp_feature(df, feature_names = ["day", "hour"])
+    df1 = extend_datetime_feature(df, feature_names = ["day", "hour"])
     logger.info(df1)
     
-    df2 = extend_datetime_stamp_feature(df, feature_names = [])
+    df2 = extend_datetime_feature(df, feature_names = [])
     logger.info(df2)
 
-    df_3 = extend_datetime_stamp_feature(df_future, feature_names = [
+    df_3 = extend_datetime_feature(df_future, feature_names = [
         'minute', 'hour', 'day', 
         'weekday', 'week', 'day_of_week', 'week_of_year', 
         'month', 'days_in_month', 'quarter', 

@@ -124,9 +124,12 @@ def predict_result_visual(preds: np.array, trues: np.array, path='./path/test.pd
     """
     Results visualization
     """
+    # 画布
     fig = plt.figure(figsize=(25, 8))
+    # 创建折线图
     plt.plot(trues, lw=1.2, label='Trues')
     plt.plot(preds, lw=1.2, label='Preds', ls="-.")
+    # 增强视觉效果
     plt.legend()
     plt.xlabel("Time")
     plt.ylabel("Value")
