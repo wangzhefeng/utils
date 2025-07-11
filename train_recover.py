@@ -9,7 +9,6 @@
 # * Description : description
 # * Link        : link
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
-# * TODO        : 1.
 # ***************************************************
 
 __all__ = []
@@ -23,6 +22,7 @@ if ROOT not in sys.path:
     sys.path.append(ROOT)
 
 import torch
+
 from utils.log_util import logger
 
 # global variable

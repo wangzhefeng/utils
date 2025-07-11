@@ -12,13 +12,14 @@
 # ***************************************************
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
 import datetime as dt
+import time
+import functools
 
 from utils.log_util import logger
 
@@ -42,11 +43,43 @@ class Timer():
         logger.info(f"Time taken: {end_dt - self.start_dt}")
 
 
+def timeit_func1(func):
+    """
+    分析代码运行时间
+    """
+    @functools.wraps(func)
+    def wrapper():
+        start = time.time()
+        func()
+        end = time.time()
+        print(f"function used: {end - start} second.")
+    
+    return wrapper
+
+
+def timeit_func2(func):
+    """
+    分析代码运行时间
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        func(*args, **kwargs)
+        end = time.time()
+        print(f"function used: {end - start} seconds.")
+    
+    return wrapper
+
+
 
 
 # 测试代码 main 函数
 def main():
-    pass
+    @timeit_func1
+    def test_func():
+        print("a")
+
+    test_func()
 
 if __name__ == "__main__":
     main()

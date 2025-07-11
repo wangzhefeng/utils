@@ -31,10 +31,9 @@ from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
+from typing import List, Tuple, Union
 import warnings
 warnings.filterwarnings("ignore")
-from pathlib import Path
-from typing import List, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -42,25 +41,30 @@ import matplotlib.pyplot as plt
 from matplotlib import dates, ticker
 import seaborn as sns
 import plotly.express as px
+from sklearn.model_selection import TimeSeriesSplit, cross_val_score
+from sklearn.metrics import mean_absolute_percentage_error
+
 # 绘图风格
 plt.style.use("seaborn-v0_8-whitegrid")  # "ggplot", "classic", "darkgrid"
+
 # 用来正常显示中文标签
 plt.rcParams["font.sans-serif"]=["SimHei"]  # 'Arial Unicode MS'
 # 处理 matplotlib 字体问题
 plt.rcParams["font.family"].append("SimHei")
 # 用来显示负号
 plt.rcParams["axes.unicode_minus"] = False
+
 # TODO 字体尺寸设置
 # plt.rcParams["font.size"] = 10  # mpl font size
 # sns.mpl.rc("font", size = 14)  # sns font size
 title_fontsize = 13
 label_fontsize = 7
+
 # figure 设置
 # sns.mpl.rc("figure", figsize = (16, 6))
-plt.tight_layout()
-plt.rcParams["figure.autolayout"] = True
-plt.rcParams["axes.grid"] = True
-
+# plt.tight_layout()
+# plt.rcParams["figure.autolayout"] = True
+# plt.rcParams["axes.grid"] = True
 plt.rc(
     "figure",
     autolayout=True,
@@ -75,6 +79,7 @@ plt.rc(
     titleweight="bold",
     titlesize=16,
     titlepad=10,
+    grid=True,
 )
 train_scatter_plot_params = dict(
     color="0.75",
@@ -119,9 +124,12 @@ def predict_result_visual(preds: np.array, trues: np.array, path='./path/test.pd
     """
     Results visualization
     """
+    # 画布
     fig = plt.figure(figsize=(25, 8))
+    # 创建折线图
     plt.plot(trues, lw=1.2, label='Trues')
-    plt.plot(preds, lw=1.2, label='Preds', ls=".-")
+    plt.plot(preds, lw=1.2, label='Preds', ls="-.")
+    # 增强视觉效果
     plt.legend()
     plt.xlabel("Time")
     plt.ylabel("Value")
@@ -129,6 +137,40 @@ def predict_result_visual(preds: np.array, trues: np.array, path='./path/test.pd
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(path, bbox_inches='tight')
+    plt.show();
+
+
+def plot_result_with_interval(X_train, y_train, y_test, y_pred, model):
+    plt.figure(figsize=(15, 7))
+    plt.plot(y_test.values, label="test actual", lw=2.0)
+    plt.plot(y_pred,        label="test pred",   lw=2.0, ls="-.")
+    
+    # 模型预测区间
+    plot_intervals = False
+    if plot_intervals:
+        # data split
+        tscv = TimeSeriesSplit(n_splits=5)
+        # tscv.split(series)
+        cv = cross_val_score(model, X_train, y_train, cv=tscv, scoring="neg_mean_absolute_error")
+        deviation = np.sqrt(cv.std())
+        scale = 1.96
+        lower = y_pred - (scale * deviation)
+        upper = y_pred + (scale * deviation)
+        plt.plot(lower, linestyle=":", alpha=0.6, color="C2", label="lower bond")
+        plt.plot(upper, linestyle=":", alpha=0.6, color="C2", label="upper bond")
+    
+    # 异常值
+    plot_anomalies = False
+    if plot_anomalies:
+        anomalies = np.array([np.NaN] * len(y_test))
+        anomalies[y_test < lower] = y_test[y_test < lower]
+        anomalies[y_test > upper] = y_test[y_test > upper]
+        plt.plot(anomalies, "o", markersize=3, color="C3", label="Anomalies")
+    
+    plt.title(f"Mean Absolute Percentage Error: {mean_absolute_percentage_error(y_test.values, y_pred):.2f}")
+    plt.legend(loc="best")
+    plt.tight_layout()
+    plt.grid(True)
     plt.show();
 
 
@@ -209,6 +251,13 @@ def model_result_plot(y_train: pd.Series, y_test: pd.Series,
         ylabel (str): _description_
         title (str): _description_
     """
+    import matplotlib as mpl
+    font_name = [
+        "Arial Unicode MS", 
+        # "SimHei"
+    ]
+    mpl.rcParams["font.sans-serif"] = font_name
+    mpl.rcParams["axes.unicode_minus"] = False
     # result plot
     fig, ax = plt.subplots()
     if y_train is not None:

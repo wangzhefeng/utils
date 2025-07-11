@@ -9,7 +9,6 @@
 # * Description : description
 # * Link        : link
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
-# * TODO        : 1.
 # ***************************************************
 
 __all__ = []
@@ -22,7 +21,6 @@ ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
 import math
-
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,7 +61,6 @@ def adjust_learning_rate(optimizer, epoch, args):
         lr_adjust = {epoch: args.learning_rate if epoch < 25 else args.learning_rate*0.1}
     elif args.lradj == '6':
         lr_adjust = {epoch: args.learning_rate if epoch < 5 else args.learning_rate*0.1}  
-    
     elif args.lradj == "cosine":
         lr_adjust = {epoch: args.learning_rate /2 * (1 + math.cos(epoch / args.train_epochs * math.pi))}
     if epoch in lr_adjust.keys():
@@ -114,6 +111,30 @@ class EarlyStopping:
         self.val_loss_min = val_loss
 
 
+class StandardScaler():
+    
+    def __init__(self):
+        self.mean = 0.
+        self.std = 1.
+
+    def fit(self, data):
+        self.mean = data.mean(0)
+        self.std = data.std(0)
+
+    def transform(self, data):
+        mean = torch.from_numpy(self.mean).type_as(data).to(data.device) if torch.is_tensor(data) else self.mean
+        std = torch.from_numpy(self.std).type_as(data).to(data.device) if torch.is_tensor(data) else self.std
+        return (data - mean) / std
+
+    def inverse_transform(self, data):
+        mean = torch.from_numpy(self.mean).type_as(data).to(data.device) if torch.is_tensor(data) else self.mean
+        std = torch.from_numpy(self.std).type_as(data).to(data.device) if torch.is_tensor(data) else self.std
+        if data.shape[-1] != mean.shape[-1]:
+            mean = mean[-1:]
+            std = std[-1:]
+        return (data * std) + mean
+
+
 # class EarlyStopping_paddle_version:
 #     """
 #     早停机制
@@ -161,7 +182,7 @@ class EarlyStopping:
 #         if self.verbose:
 #             print(f"Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...")
 #         # checkpoint 保存
-#         paddle.save(model.state_dict(), Path(path).joinpath("checkpoint.pth"))
+#         paddle.save(model.state_dict(), Path(path).joinpath("checkpoint.pth")
 #         # 更新最小验证损失
 #         self.val_loss_min = val_loss
 
