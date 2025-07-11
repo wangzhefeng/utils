@@ -26,9 +26,10 @@ import os
 import sys
 
 import torch.utils
-ROOT = os.getcwd()
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 
 import torch
 import torch.nn as nn

@@ -12,9 +12,11 @@
 # ***************************************************
 
 # python libraries
-import os
 import sys
-import datetime
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 from collections import OrderedDict
 
 import numpy as np

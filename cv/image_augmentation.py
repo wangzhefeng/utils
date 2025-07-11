@@ -12,12 +12,12 @@
 # ***************************************************
 
 # python libraries
-import os
 import sys
+from pathlib import Path
+ROOT = str(Path.cwd())
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
 
-import torch
-from torch import nn
-import torchvision
 from torchvision import transforms
 from torchvision import datasets
 from d2l import torch as d2l

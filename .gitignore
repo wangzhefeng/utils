@@ -177,3 +177,4 @@ cython_debug/
 # custom
 .vscode/
 .DS_Store
+logs/
