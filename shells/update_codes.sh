@@ -2,7 +2,7 @@
 
 # push TinyVLM
 echo "--------------------------"
-echo "update TinyVLM codes..."
+echo "update TinyLLM codes..."
 echo "--------------------------"
 # Checkout the specified branch
 git checkout main
