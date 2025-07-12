@@ -53,6 +53,11 @@ import torch
 logger.info(torch.cuda.is_bf16_supported())
 
 
+# 4.jupyter notebook
+from IPython.display import Image
+Image(filename="images/aiayn.png")
+
+
 
 
 # 测试代码 main 函数
