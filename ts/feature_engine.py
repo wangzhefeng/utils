@@ -203,7 +203,7 @@ def extend_datetime_feature(df: pd.DataFrame, feature_names: str):
     }
     for feature_name in feature_names:
         func = feature_map[feature_name]
-        df[f"datetime_{feature_name}"] = df["ds"].apply(func)
+        df[f"datetime_{feature_name}"] = df["timeStamp"].apply(func)
     datetime_features = [
         col for col in df.columns 
         if col.startswith("datetime")
