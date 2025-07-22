@@ -212,7 +212,7 @@ def extend_datetime_feature(df: pd.DataFrame, feature_names: str):
     return df, datetime_features
 
 
-def extend_date_type_feature(df: pd.DataFrame, df_date: pd.DataFrame):
+def extend_datetype_feature(df: pd.DataFrame, df_date: pd.DataFrame):
     """
     增加日期类型特征：
     1-工作日 2-非工作日 3-删除计算日 4-元旦 5-春节 6-清明节 7-劳动节 8-端午节 9-中秋节 10-国庆节
