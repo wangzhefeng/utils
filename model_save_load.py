@@ -21,7 +21,8 @@ if ROOT not in sys.path:
 from typing import List
 
 import pickle
-from sklearn.externals import joblib
+import joblib
+# from sklearn.externals import joblib
 
 from sklearn2pmml import sklearn2pmml, PMMLPipeline
 from sklearn_pandas import DataFrameMapper
