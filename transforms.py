@@ -61,3 +61,11 @@ def SeriesDataStandardScaler(series):
 
     return scaler, normalized
 
+
+
+# 测试代码 main 函数
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()

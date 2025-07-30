@@ -17,6 +17,8 @@ from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
+import math
+import random
 
 import numpy as np
 import pandas as pd
@@ -79,7 +81,7 @@ def smote(data, tag_label = "tag_1", amount_personal = 0, std_rate = 5, k = 5, m
             # 分类变量取mode
             new_case2 = []
             for i in class_index:
-                L = pd.DataFrame(neighbors_group[:, i])
+                L = pd.DataFrame(neighbor_group[:, i])
                 new_case2.append(np.array(L.mode()[0])[0])
             new_case.extend(new_case1)
             new_case.extend(new_case2)
@@ -115,7 +117,7 @@ class sample_s(object):
             data_set = x[x[y] == k[0]]
             nrow_nb = data_set.iloc[:, 0].count()
             data_set.index = range(nrow_nb)
-            index_id = rd.sample(range(nrow_nb), int(nrow_nb * z))
+            index_id = random.sample(range(nrow_nb), int(nrow_nb * z))
             result = pd.concat([result, data_set.iloc[index_id, :]], axis=0)
         new_data = pd.Series(result['label']).value_counts()
         new_data = pd.DataFrame(new_data)
@@ -175,7 +177,7 @@ class sample_s(object):
         n2 = n - n1
         fre1 = n2 / float(x[x[y] == k3[0]]['label'].count())
         fre2 = n1 / float(x[x[y] == k4[1]]['label'].count())
-        fre3 = ma.modf(fre2)
+        fre3 = math.modf(fre2)
         new_data1 = x[x[y] == k3[0]].sample(frac=fre1, random_state=q, axis=0)
         new_data2 = x[x[y] == k4[1]].sample(frac=fre3[0], random_state=q, axis=0)
         test_data = pd.DataFrame([])
@@ -235,7 +237,7 @@ def vif_test(data, label, k = None):
     vif_value = []
     for i in range(res.shape[0]):
         for j in range(res.shape[0]):
-            if j > I:
+            if j > i:
                 vif_value.append([x.columns[i], x.columns[j], res[i, j]])
     vif_value = sorted(vif_value, key = lambda x: x[2])
     if k is not None:

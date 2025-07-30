@@ -15,7 +15,6 @@
 from pathlib import Path
 
 import numpy as np
-import torch
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]

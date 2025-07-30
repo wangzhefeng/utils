@@ -12,13 +12,10 @@
 # * Requirement : 相关模块版本需求(例如: numpy >= 2.1.0)
 # ***************************************************
 
-
 # python libraries
-import os
-import sys
+from pathlib import Path
 
 import optuna
-
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
