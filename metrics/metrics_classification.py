@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 # ***************************************************
 # * File        : metrics_classification.py
 # * Author      : Zhefeng Wang
@@ -211,6 +210,20 @@ def scoring():
     }
 
     return scoring_classifier
+
+
+# 混淆矩阵
+def confusion_matrix():
+    pass
+
+# 精度和召回率
+def precision_recall():
+    pass
+
+# f1 score
+def lgb_f1(labels, preds):
+    score = f1_score(labels, np.round(preds))
+    return 'f1', score, True
 
 
 

@@ -20,6 +20,7 @@ if ROOT not in sys.path:
 import datetime as dt
 import time
 import functools
+from contextlib import contextmanager
 
 from utils.log_util import logger
 
@@ -69,6 +70,13 @@ def timeit_func2(func):
         print(f"function used: {end - start} seconds.")
     
     return wrapper
+
+
+@contextmanager
+def timer(name):
+	start = time.time()
+	yield
+	print("{} - done in {:.0f}s".format(name, time.time() - start))
 
 
 
