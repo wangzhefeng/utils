@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # ***************************************************
-# * File        : metrics.py
+# * File        : metrics_dl.py
 # * Author      : Zhefeng Wang
 # * Email       : wangzhefengr@163.com
 # * Date        : 2024-11-02
@@ -12,7 +12,6 @@
 # ***************************************************
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -24,7 +23,7 @@ import numpy as np
 import torch
 from torchmetrics.functional.regression import mean_absolute_percentage_error
 
-from utils.dtw_metric import accelerated_dtw
+from utils.ts.dtw_metric import accelerated_dtw
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
