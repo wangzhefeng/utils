@@ -20,63 +20,59 @@ if ROOT not in sys.path:
 
 from sklearn.preprocessing import MinMaxScaler
 
+from utils.log_util import logger
+
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
-def norm_series(series):
+def SeriesDataNormalize(series):
     """
-    时间序列归一化
-    """
-    # 准备归一化数据
-    values = series.values
-    values = values.reshape((len(values), 1))
-    
-    # 定义缩放范围(0, 1)
-    scaler = MinMaxScaler(feature_range = (0, 1))
-    scaler = scaler.fit(values)
-    print('Min: %f, Max: %f' % (scaler.data_min_, scaler.data_max_))
-    
-    # 归一化数据集
-    normalized = scaler.transform(values)
-    # for i in range(5):
-    #     print(normalized[i])
-    
-    # 逆变换并打印前5行
-    inversed = scaler.inverse_transform(normalized)
-    # for i in range(5):
-    #     print(inversed[i])
+    数据序列归一化函数, 受异常值影响
 
-    return normalized, inversed
+    Parameters: 
+        series: np.array (n, m)
+    
+    Returns:
+        scaler: 归一化对象
+        normalized: 归一化序列
+    https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
+    """
+    logger.info(f"series: \n{series}")
+    # 定义标准化模型
+    scaler = MinMaxScaler(feature_range = (0, 1))
+    scaler.fit(series)
+    # 标准化数据
+    normalized = scaler.transform(series)
+    # 逆标准化数据
+    inversed = scaler.inverse_transform(normalized)
+
+    return scaler, normalized, inversed
 
 
 
 
 # 测试代码 main 函数
 def main():
-    import pandas as pd
-    import matplotlib.pyplot as plt
     # ------------------------------
-    # 判断数据是否适用标准化 
-    # ------------------------------
+    # 判断数据是否适用标准化
+    # ------------------------------ 
     # 数据读取
-    series = pd.read_csv(
-        "E:/projects/timeseries_forecasting/tsproj/dataset/daily-minimum-temperatures-in-me.csv",
-        header = 0,
-        index_col = 0,
-        # parse_dates = [0],
-        # date_parser = lambda dates: pd.to_datetime("190" + dates, format = "%Y-%m"),
-    )
-    print(series.head())
+    import pandas as pd
+    series = pd.read_csv("./dataset/ETT-small/ETTh1.csv", index_col = 0)
+    logger.info(f"series: \n{series.head()}")
+    
     # 根据数据分布图判断数据是否服从正太分布
-    # series.hist()
+    # import matplotlib.pyplot as plt
+    # series["OT"].hist()
     # plt.show()
+    
     # ------------------------------
     # 时间序列归一化
     # ------------------------------
-    normalized, inversed = norm_series(series)
-    print(normalized)
-    print(inversed) 
+    scaled, normalized, inversed = SeriesDataNormalize(series[["OT"]])
+    logger.info(f"normalized: \n{normalized}")
+    logger.info(f"inversed: \n{inversed}")
 
 if __name__ == "__main__":
     main()
