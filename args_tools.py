@@ -103,7 +103,7 @@ def print_args_ts(args):
     # Run Parameters
     # ------------------------------
     logger.info("\033[1m" + "Run Parameters" + "\033[0m")
-    logger.info(f'  {"Num Workers:":<20}{args.num_workers:<20}{"Itr:":<20}{args.iters:<20}')
+    logger.info(f'  {"Num Workers:":<20}{args.num_workers:<20}{"Itr:":<20}{args.itr:<20}')
     logger.info(f'  {"Train Epochs:":<20}{args.train_epochs:<20}{"Batch Size:":<20}{args.batch_size:<20}')
     logger.info(f'  {"Patience:":<20}{args.patience:<20}{"Learning Rate:":<20}{args.learning_rate:<20}')
     logger.info(f'  {"Loss:":<20}{args.loss:<20}{"Lradj:":<20}{args.lradj:<20}')
