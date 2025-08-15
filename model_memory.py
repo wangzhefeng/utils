@@ -79,25 +79,39 @@ def model_memory_size(model, input_dtype=torch.float32, verbose:bool=True):
         # Check if gradients are stored for this parameter
         if param.requires_grad:
             total_grads += param_size
-
+    if verbose:
+        logger.info(f"{40 * '='}")
+        logger.info(f"Device Info:")
+        logger.info(f"{40 * '='}")
+        logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
+    
     # Calculate buffer size (non-parameters that require memory)
     total_buffers = sum(buf.numel() for buf in model.buffers())
     if verbose:
         # logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
         logger.info(f"Total number of parameters: {(total_params + total_grads + total_buffers) / 1e6:.2f}M.")
-        
+    
     # Size in bytes = (Number of elements) * (Size of each element in bytes)
     # We assume parameters and gradients are stored in the same type as input dtype
     element_size = torch.tensor(0, dtype=input_dtype).element_size()
     total_memory_bytes = (total_params + total_grads + total_buffers) * element_size
-
+    
     # Convert bytes to gigabytes
     total_memory_gb = total_memory_bytes / (1024**3)
     if verbose:
         logger.info(f"Model memory used size: {total_memory_gb:.2f}GB.")
-
-    return total_memory_gb
-
+    
+    # 返回指定设备上张量当前占用的 GPU 内存字节数, 这很可能小于在 nvidia-smi 中显示的量，
+    # 因为一些未使用的内存可能被缓存分配器持有，并且需要在 GPU 上创建一些上下文
+    allocated_memory = torch.cuda.memory_allocated() / 1024 ** 3
+    if verbose:
+        logger.info(f"Allocated tensor emory: {allocated_memory:.2f}GB.")
+    
+    # 返回指定设备上缓存分配器管理的当前 GPU 内存字节数
+    cached_memory = torch.cuda.memory_reserved() / 1024 ** 3
+    if verbose:
+        logger.info(f"Cached total memory: {cached_memory:.2f}GB.")
+        logger.info(f"{40 * '='}")
 
 
 
