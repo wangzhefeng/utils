@@ -25,7 +25,7 @@ import re
 
 import torch
 
-from models.gpt import Model
+from models.gpt2 import Model
 from utils.log_util import logger
 
 # global variable
