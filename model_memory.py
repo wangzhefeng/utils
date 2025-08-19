@@ -81,7 +81,7 @@ def model_memory_size(model, input_dtype=torch.float32, verbose:bool=True):
             total_grads += param_size
     if verbose:
         logger.info(f"{40 * '='}")
-        logger.info(f"Device Info:")
+        logger.info(f"Model Info:")
         logger.info(f"{40 * '='}")
         logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
     

@@ -103,7 +103,7 @@ def plot_losses(train_epochs, train_losses, valid_losses, label: str = "loss", r
     # save fig
     plt.savefig(Path(results_path).joinpath(f"{label}_plot.pdf"))
     # show fig
-    plt.show();
+    # plt.show();
 
 
 

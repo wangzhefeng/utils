@@ -46,7 +46,7 @@ def print_args_ts(args):
     # ------------------------------
     # Basic Config
     # ------------------------------
-    logger.info(f'{100 * "-"}')
+    logger.info(f'{100 * "="}')
     logger.info(f'Args in experiment:')
     logger.info(f'{100 * "-"}')
     logger.info("\033[1m" + "Basic Config" + "\033[0m")
@@ -123,14 +123,14 @@ def print_args_ts(args):
     p_hidden_dims_str = ', '.join(map(str, args.p_hidden_dims))
     logger.info(f'  {"P Hidden Dims:":<20}{p_hidden_dims_str:<20}{"P Hidden Layers:":<20}{args.p_hidden_layers:<20}') 
     # logger.info("")
-    logger.info(f'{100 * "-"}')
+    logger.info(f'{100 * "="}')
 
 
 def print_args_llm(args):
     # ------------------------------
     # Basic Config
     # ------------------------------
-    logger.info(f'{100 * "-"}')
+    logger.info(f'{100 * "="}')
     logger.info(f'Args in experiment:')
     logger.info(f'{100 * "-"}')
     logger.info("\033[1m" + "Basic Config" + "\033[0m")
@@ -178,7 +178,7 @@ def print_args_llm(args):
     logger.info(f'  {"Number Workders:":<20}{args.num_workers:<20}')
     logger.info("")
     # logger.info("")
-    logger.info(f'{100 * "-"}')
+    logger.info(f'{100 * "="}')
 
 
 
