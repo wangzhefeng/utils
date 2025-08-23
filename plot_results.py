@@ -136,7 +136,7 @@ def predict_result_visual(preds: np.array, trues: np.array, path='./path/test.pd
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(path, bbox_inches='tight')
-    plt.show();
+    # plt.show();
 
 
 def plot_result_with_interval(X_train, y_train, y_test, y_pred, model):
