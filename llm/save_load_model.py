@@ -14,7 +14,6 @@
 __all__ = []
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -22,10 +21,9 @@ if ROOT not in sys.path:
     sys.path.append(ROOT)
 import re
 
-
 import torch
 
-from models.gpt2 import Model
+from models.gpt2_124M import Model
 from utils.log_util import logger
 
 # global variable
@@ -48,6 +46,7 @@ def load_model_weights(args, model_path: str, device: str):
     model.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
     model.eval();
 
+
 '''
 def save_model(model, finetuned_model_path: str, choose_model: str):
     """
@@ -66,6 +65,7 @@ def load_model(model, finetuned_model_path: str, choose_model: str, device):
     model.load_state_dict(torch.load(file_name, map_location=device, weights_only=True))
     logger.info(f"Model loaded from {file_name}")
 '''
+
 
 def save_model_optim_weights(model, optimizer, model_path: str):
     """
