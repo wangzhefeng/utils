@@ -25,7 +25,6 @@ from importlib.metadata import version
 # global variable
 LOGGING_LABEL = __file__.split('\\')[-1][:-3]
 os.environ['LOG_NAME'] = LOGGING_LABEL
-
 from utils.log_util import logger
 
 
@@ -42,18 +41,7 @@ for p in pkgs:
     logger.info(f"{p} version: {version(p)}")
 
 
-# 2.set options
-import torch
-torch.set_printoptions(sci_mode=False)
-
-
-# 3.Mix-Precision Training
-# 检查 GPU 是否支持 bfloat16(brain float point)
-import torch
-logger.info(torch.cuda.is_bf16_supported())
-
-
-# 4.jupyter notebook
+# 2.jupyter notebook
 from IPython.display import Image
 Image(filename="images/aiayn.png")
 

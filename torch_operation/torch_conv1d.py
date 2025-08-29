@@ -174,6 +174,21 @@ class TestConv1d_7(nn.Module):
         self.conv.weight[1,0,0] = 4.
  
 
+def calc_dim_conv1d(in_channles: int, 
+                    padding: int = 1,  
+                    kernel_size: int = 3, 
+                    stride: int = 1, 
+                    dilation: int = 1):
+    out_channels = (
+        in_channles + \
+        2 * padding - \
+        dilation * (kernel_size - 1) \
+            - 1
+    ) / stride + 1
+    
+    return out_channels
+
+
 
 
 # 测试代码 main 函数
@@ -185,6 +200,15 @@ def main():
     out_y = net(in_x)
     print("out_y.shape", out_y.shape)
     print(out_y)
+
+    out_channels = calc_dim_conv1d(
+        in_channles=1,
+        padding=1,
+        kernel_size=3,
+        stride=1,
+        dilation=1,
+    )
+    print(out_channels)
 
 if __name__ == "__main__":
     main()
