@@ -104,8 +104,10 @@ def model_memory_size(model, input_dtype=torch.float32, verbose:bool=True):
     # 返回指定设备上张量当前占用的 GPU 内存字节数, 这很可能小于在 nvidia-smi 中显示的量，
     # 因为一些未使用的内存可能被缓存分配器持有，并且需要在 GPU 上创建一些上下文
     allocated_memory = torch.cuda.memory_allocated() / 1024 ** 3
+    max_allocated_memory = torch.cuda.max_memory_allocated() / 1024 ** 3
     if verbose:
         logger.info(f"Allocated tensor emory: {allocated_memory:.2f}GB.")
+        logger.info(f"Max Allocated tensor emory: {max_allocated_memory:.2f}GB.")
     
     # 返回指定设备上缓存分配器管理的当前 GPU 内存字节数
     cached_memory = torch.cuda.memory_reserved() / 1024 ** 3
