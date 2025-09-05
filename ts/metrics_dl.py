@@ -21,7 +21,10 @@ from typing import Union, List
 
 import numpy as np
 import torch
-from torchmetrics.functional.regression import mean_absolute_percentage_error
+from torchmetrics.functional.regression import (
+    r2_score,
+    mean_absolute_percentage_error, 
+)
 
 from utils.ts.dtw_metric import accelerated_dtw
 
@@ -38,6 +41,12 @@ def CORR(pred, true):
     d = np.sqrt(((true - true.mean(0)) ** 2 * (pred - pred.mean(0)) ** 2).sum(0))
     
     return (u / d).mean(-1)
+
+def R_square(pred, true):
+    pred = torch.from_numpy(pred)
+    true = torch.from_numpy(true)
+    # true, pred = np.array(true), np.array(pred)
+    return r2_score(pred, true)
 
 
 def MSE(pred, true):
@@ -65,8 +74,7 @@ def MAPE_v2(true: Union[List, np.array], pred: Union[List, np.array]):
     """
     pred = torch.from_numpy(pred)
     true = torch.from_numpy(true)
-
-    return mean_absolute_percentage_error(true, pred)
+    return mean_absolute_percentage_error(pred, true)
 
 
 def Accuracy(pred, true):
@@ -76,7 +84,7 @@ def Accuracy(pred, true):
     pred = torch.from_numpy(pred)
     true = torch.from_numpy(true)
     
-    return 1 - mean_absolute_percentage_error(true, pred)
+    return 1 - mean_absolute_percentage_error(pred, true)
 
 
 def MSPE(pred, true):
@@ -101,6 +109,7 @@ def DTW(preds, trues):
 def metric(pred, true):
     # rse = RSE(pred, true)
     # corr = CORR(pred, true)
+    r2 = R_square(pred, true)
     mse = MSE(pred, true)
     rmse = RMSE(pred, true)
     mae = MAE(pred, true)
@@ -109,7 +118,7 @@ def metric(pred, true):
     mspe = MSPE(pred, true)
     # dtw = DTW(pred, true)
 
-    return mse, rmse, mae, mape, accuracy, mspe
+    return r2, mse, rmse, mae, mape, accuracy, mspe
 
 
 def cal_accuracy(y_pred, y_true):
@@ -131,11 +140,14 @@ def main():
     # mae, mse, rmse, mape, accuracy, mspe = metric(y_pred, y_true)
     # print(f"mae: {mae}\nmse: {mse}\nrmse: {rmse}\nmape: {mape}\
     #     \naccuracy: {accuracy}\nmspe: {mspe}")
+    
     import torch
     from torchmetrics.functional.regression import mean_absolute_percentage_error
     
     target = torch.tensor([1, 10, 1e6])
     preds = torch.tensor([0.9, 15, 1.2e6])
+    r2 = r2_score(preds, target)
+    print(r2)
     mape = mean_absolute_percentage_error(preds, target)
     print(mape)
     print(1-mape)
