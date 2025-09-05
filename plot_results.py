@@ -25,7 +25,6 @@
 """
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -137,7 +136,7 @@ def predict_result_visual(preds: np.array, trues: np.array, path='./path/test.pd
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(path, bbox_inches='tight')
-    plt.show();
+    # plt.show();
 
 
 def plot_result_with_interval(X_train, y_train, y_test, y_pred, model):
@@ -715,6 +714,26 @@ def plot_scatter(data, x: str, y: str, cate_col: str = None,
     # title
     plt.title(title)
     plt.show();
+
+
+def display_importances(feature_importance_df_):
+    """
+    Display / plot feature importance
+    """
+    cols = feature_importance_df_[['feature', 'importance']] \
+               .groupby('feature') \
+               .mean() \
+               .sort_values(by = 'importance', ascending = False)[:40].index
+    best_features = feature_importance_df_.loc[feature_importance_df_.feature.isin(cols)]
+    plt.figure(figsize = (8, 10))
+    sns.barplot(
+        x = 'importance', 
+        y = 'feature', 
+        data = best_features.sort_values(by = 'importance', ascending = False)
+    )
+    plt.title("LightGBM Features (avg over folds)")
+    plt.tight_layout()
+    plt.savefig("lgbm_importances.png");
 
 
 

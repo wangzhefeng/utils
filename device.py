@@ -23,6 +23,7 @@ from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
+from importlib.metadata import version
 
 import torch
 
@@ -58,6 +59,7 @@ def device_setting(verbose: bool = False):
     if verbose:
         # logger.info(f"{'Using device':<13}: {device.type.upper():<13}")
         logger.info(f"{'Using device':<13}: {str(device):<13}")
+        logger.info(f"{'torch version':<13}: {version('torch'):<13}")
         logger.info(f"{40 * '='}")
 
     return device
@@ -114,7 +116,7 @@ def torch_gc(device_id=""):
         with torch.cuda.device(DEVICE):  # 指定 CUDA 设备
             torch.cuda.empty_cache()  # 清空 CUDA 缓存
             torch.cuda.ipc_collect()  # 收集 CUDA 内存碎片
-    elif torch.backends.mps.is_available():
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
         torch.mps.empty_cache()
 
 

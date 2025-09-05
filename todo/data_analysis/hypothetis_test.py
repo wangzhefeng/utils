@@ -30,7 +30,7 @@ from scipy.stats import (
     kendalltau
 )
 
-from utils import (
+from todo.utils import (
     plot_scatter_reg,
     plot_scatter,
 )

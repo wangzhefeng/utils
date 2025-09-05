@@ -29,7 +29,6 @@ from IPython.display import Image, display
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
-
 # data
 data = dowhy.datasets.linear_dataset(
     beta=10,  # beta 表示真实的因果效应
@@ -53,6 +52,7 @@ model = CausalModel(
 )
 model.view_model()
 display(Image(filename="causal_model.png"))
+
 
 # identify
 identified_estimand = model.identify_effect()

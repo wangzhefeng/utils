@@ -24,6 +24,11 @@ import glob
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
 
+"""
+- os.path
+- pathlib.Path
+- glob.glob
+"""
 
 
 

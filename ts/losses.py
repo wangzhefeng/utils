@@ -16,8 +16,6 @@
 Loss functions for PyTorch.
 """
 
-import pdb
-
 import numpy as np
 import torch as t
 import torch.nn as nn
@@ -44,14 +42,19 @@ class mape_loss(nn.Module):
                 freq: int,
                 forecast: t.Tensor, 
                 target: t.Tensor, 
-                mask: t.Tensor) -> t.float:
+                mask: t.Tensor):
         """
         MAPE loss as defined in: https://en.wikipedia.org/wiki/Mean_absolute_percentage_error
 
-        :param forecast: Forecast values. Shape: batch, time
-        :param target: Target values. Shape: batch, time
-        :param mask: 0/1 mask. Shape: batch, time
-        :return: Loss value
+        Args:
+            insample (t.Tensor): Insample values. Shape: (batch, time_i)
+            freq (int): Frequency value
+            forecast (t.Tensor): Forecast values. Shape: (batch, time_o)
+            target (t.Tensor): Target values. Shape: (batch, time_o)
+            mask (t.Tensor): 0/1 mask. Shape: (batch, time_o)
+
+        Returns:
+            _type_: Loss value
         """
         weights = divide_no_nan(mask, target)
         
@@ -68,14 +71,19 @@ class smape_loss(nn.Module):
                 freq: int,
                 forecast: t.Tensor, 
                 target: t.Tensor, 
-                mask: t.Tensor) -> t.float:
+                mask: t.Tensor):
         """
-        sMAPE loss as defined in https://robjhyndman.com/hyndsight/smape/ (Makridakis 1993)
+        sMAPE loss as defined in https://robjhyndman.com/hyndsight/smape/ (Makridakis 1993) 
 
-        :param forecast: Forecast values. Shape: batch, time
-        :param target: Target values. Shape: batch, time
-        :param mask: 0/1 mask. Shape: batch, time
-        :return: Loss value
+        Args:
+            insample (t.Tensor): Insample values. Shape: (batch, time_i)
+            freq (int): Frequency value
+            forecast (t.Tensor): Forecast values. Shape: (batch, time_o)
+            target (t.Tensor): Target values. Shape: (batch, time_o)
+            mask (t.Tensor): 0/1 mask. Shape: (batch, time_o)
+
+        Returns:
+            _type_: Loss value
         """
         return 200 * t.mean(
             divide_no_nan(
@@ -95,16 +103,19 @@ class mase_loss(nn.Module):
                 freq: int,
                 forecast: t.Tensor, 
                 target: t.Tensor, 
-                mask: t.Tensor) -> t.float:
+                mask: t.Tensor):
         """
-        MASE loss as defined in "Scaled Errors" https://robjhyndman.com/papers/mase.pdf
+        MASE loss as defined in "Scaled Errors" https://robjhyndman.com/papers/mase.pdf 
 
-        :param insample: Insample values. Shape: batch, time_i
-        :param freq: Frequency value
-        :param forecast: Forecast values. Shape: batch, time_o
-        :param target: Target values. Shape: batch, time_o
-        :param mask: 0/1 mask. Shape: batch, time_o
-        :return: Loss value
+        Args:
+            insample (t.Tensor): Insample values. Shape: (batch, time_i)
+            freq (int): Frequency value
+            forecast (t.Tensor): Forecast values. Shape: (batch, time_o)
+            target (t.Tensor): Target values. Shape: (batch, time_o)
+            mask (t.Tensor): 0/1 mask. Shape: (batch, time_o)
+
+        Returns:
+            _type_: Loss value
         """
         masep = t.mean(t.abs(insample[:, freq:] - insample[:, :-freq]), dim=1)
         masked_masep_inv = divide_no_nan(mask, masep[:, None])

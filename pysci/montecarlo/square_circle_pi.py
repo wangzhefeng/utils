@@ -22,7 +22,7 @@ import math
 import turtle
 import random
 
-from utils import plot_prob_result
+from todo.utils import plot_prob_result
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
