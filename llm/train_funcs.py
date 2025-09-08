@@ -12,7 +12,6 @@
 # ***************************************************
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -20,15 +19,13 @@ if ROOT not in sys.path:
     sys.path.append(ROOT)
 import math
 
-
 import numpy as np
+import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 import torch
 import torch.nn as nn
-import matplotlib.pyplot as plt
 
 from utils.log_util import logger
-
-plt.switch_backend('agg')
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
@@ -41,7 +38,8 @@ def select_optimizer(model, learning_rate: float, weight_decay: float):
     optimizer = torch.optim.AdamW(
         model.parameters(), 
         lr = learning_rate, 
-        weight_decay = weight_decay
+        weight_decay = weight_decay,
+        fused=True,
     )
 
     return optimizer
