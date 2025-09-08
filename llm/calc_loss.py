@@ -12,7 +12,6 @@
 # ***************************************************
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -21,8 +20,7 @@ if ROOT not in sys.path:
 
 import torch
 
-from utils.train_utils.train_funcs import select_criterion
-from utils.log_util import logger
+from utils.llm.train_funcs import select_criterion
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
