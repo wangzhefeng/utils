@@ -27,11 +27,11 @@ warnings.filterwarnings("ignore")
 
 import numpy as np
 import torch
+import torch.multiprocessing as mp
 import torch.distributed as dist
-from torch.utils.data.distributed import DistributedSampler              # data
 from torch.nn.parallel import DistributedDataParallel as DDP             # model
-from torch.distributed import init_process_group, destroy_process_group  # process
-import torch.multiprocessing as mp                                       # device
+
+from utils.log_util import logger
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
@@ -49,17 +49,54 @@ def seed_worker(worker_id):
     random.seed(worker_seed)
 
 
+def is_dist():
+    return dist.is_available() and dist.is_initialized()
+
+
 def init_dist():
     dist.init_process_group(backend="nccl")
     torch.cuda.set_device(dist.get_rank())
 
 
+def init_env_dist():
+    dist.init_process_group(backend="gloo|nccl")
+    torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+
+
+def ddp_setup(rank: int, world_size: int):
+    """
+    function to initialize a distributed process group(1 process/GPU)
+    this allows communication among processes
+
+    Args:
+        rank (int): a unique process ID(Unique identifier of each process)
+        world_size (int): total number of processes in the group
+    """
+    # Only set MASTER_ADDR and MASTER_PORT if not already defined by torchrun
+    # rank of machine running rank:0 process, assume all GPUs are on the same machine
+    if "MASTER_ADDR" not in os.environ:
+        os.environ["MASTER_ADDR"] = "localhost"
+    
+    # any free port on the machine
+    if "MASTER_PORT" not in os.environ:
+        os.environ["MASTER_PORT"] = "12345"
+    
+    # initialize process group
+    if platform.system() == "Windows":
+        # Disable libuv because PyTorch for Windows isn't built with support
+        os.environ["USE_LIBUV"] = "0"
+        # Windows users may have to use "gloo" instead of "nccl" as backend
+        # gllo: Facebook Collective Communication Library
+        dist.init_process_group(backend="gloo", rank=rank, world_size=world_size)
+    else:
+        # nccl: NVIDIA Collective Communication Library
+        dist.init_process_group(backend="nccl", rank=rank, world_size=world_size)
+    # set deivce
+    torch.cuda.set_device(rank)
+
+
 def destory_dist():
     dist.destroy_process_group()
-
-
-def is_dist():
-    return dist.is_available() and dist.is_initialized()
 
 
 def is_master():
@@ -72,6 +109,27 @@ def get_world_size():
 
 def get_rank():
     return dist.get_rank() if is_dist() else 0
+
+
+def get_env_world_size():
+    if "WORLD_SIZE" in os.environ:
+        world_size = int(os.environ["WORLD_SIZE"])
+    else:
+        # world_size = 1
+        world_size = torch.cuda.device_count()
+
+    return world_size
+
+
+def get_env_rank(): 
+    if "LOCAL_RANK" in os.environ:
+        rank = int(os.environ["LOCAL_RANK"])
+    elif "RANK" in os.environ:
+        rank = int(os.environ["RANK"])
+    else:
+        rank = 0
+    
+    return rank
 
 
 def dist_gather(o):
@@ -87,49 +145,57 @@ def wrap_model(model):
     return model
 
 
-def ddp_setup_custom(rank: int, world_size: int):
-    """
-    function to initialize a distributed process group(1 process/GPU)
-    this allows communication among processes
-
-    Args:
-        rank (int): a unique process ID(Unique identifier of each process)
-        world_size (int): total number of processes in the group
-    """
-    # Only set MASTER_ADDR and MASTER_PORT if not already defined by torchrun
-    # rank of machine running rank:0 process, assume all GPUs are on the same machine
-    if "MASTER_ADDR" not in os.environ:
-        os.environ["MASTER_ADDR"] = "localhost"
-    # any free port on the machine
-    if "MASTER_PORT" not in os.environ:
-        os.environ["MASTER_PORT"] = "12345"
-    
-    # initialize process group
-    if platform.system() == "Windows":
-        # Disable libuv because PyTorch for Windows isn't built with support
-        os.environ["USE_LIBUV"] = "0"
-        # Windows users may have to use "gloo" instead of "nccl" as backend
-        # gllo: Facebook Collective Communication Library
-        init_process_group(backend="gloo", rank=rank, world_size=world_size)
-    else:
-        # nccl: NVIDIA Collective Communication Library
-        init_process_group(backend="nccl", rank=rank, world_size=world_size)
-    # set deivce
-    torch.cuda.set_device(rank)
-
-
-def ddp_setup():
-    init_process_group(backend="gloo|nccl")
-    torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+def print_master_log():
+    if is_master():
+        # PyTorch version
+        logger.info(f"PyTorch version: {torch.__version__}")
+        # CUDA version
+        if torch.cuda.is_available():
+            logger.info(f"CUDA version: {torch.version.cuda}")
+        # CUDA capability
+        capability = torch.cuda.get_device_capability()
+        if capability[0] >= 7:
+            torch.set_float32_matmul_precision("high")
+            logger.info("Uses tensor cores.")
+        else:
+            logger.info("Tensor cores not supported on this GPU. Using default precision.")
 
 
 
 
 # 测试代码 main 函数
 def main():
-    # ddp_setup_custom(rank=0, world_size=1)
-    # ddp_setup()
-    print(is_dist())
+    ddp_setup(rank=0, world_size=1)
+    destory_dist()
+    
+    if is_dist():
+        init_dist()
+        init_env_dist()
+        ddp_setup(rank=0, world_size=1)
+        destory_dist()
+
+    
+    logger.info(f"is_dist: {is_dist()}")
+
+    world_size = get_world_size()
+    logger.info(f"world_size: {world_size}")
+
+    world_env_size = get_env_world_size()
+    logger.info(f"world_env_size: {world_env_size}")
+
+    rank = get_rank()
+    logger.info(f"rank: {rank}")
+
+    env_rank = get_env_rank()
+    logger.info(f"env_rank: {env_rank}")
+
+
+    IS_master = is_master()
+    logger.info(f"is_master: {IS_master}")
+    print_master_log()
+
+    # device = torch.device("cuda", rank)
+    # logger.info(f"device: {device}, device.index: {device.index}")
 
 if __name__ == "__main__":
     main()
