@@ -23,35 +23,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 import torch
-import torch.nn as nn
 
 from utils.log_util import logger
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
-
-
-def select_optimizer(model, learning_rate: float, weight_decay: float):
-    """
-    optimizer
-    """
-    optimizer = torch.optim.AdamW(
-        model.parameters(), 
-        lr = learning_rate, 
-        weight_decay = weight_decay,
-        fused=True,
-    )
-
-    return optimizer
-
-
-def select_criterion():
-    """
-    loss
-    """
-    criterion = nn.CrossEntropyLoss()
-
-    return criterion
 
 
 def adjust_learning_rate(optimizer, epoch, args):
