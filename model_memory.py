@@ -83,13 +83,19 @@ def model_memory_size(model, input_dtype=torch.float32, verbose:bool=True):
         logger.info(f"{40 * '='}")
         logger.info(f"Model Info:")
         logger.info(f"{40 * '='}")
-        logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
+        # logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
+        logger.info(f"Model number of parameters: {total_params:,}")
     
     # Calculate buffer size (non-parameters that require memory)
     total_buffers = sum(buf.numel() for buf in model.buffers())
     if verbose:
         # logger.info(f"Model number of parameters: {total_params / 1e6:.2f}M.")
-        logger.info(f"Total number of parameters: {(total_params + total_grads + total_buffers) / 1e6:.2f}M.")
+        # logger.info(f"Total number of parameters: {(total_params + total_grads + total_buffers) / 1e6:.2f}M.")
+        logger.info(f"Total number of parameters: {(total_params + total_grads + total_buffers):,}")
+    
+   # Account for weight tying
+    # total_params_normalized = total_params - model.tok_embed.weight.numel()
+    # logger.info(f"Total number of unique parameters: {total_params_normalized:,}") 
     
     # Size in bytes = (Number of elements) * (Size of each element in bytes)
     # We assume parameters and gradients are stored in the same type as input dtype

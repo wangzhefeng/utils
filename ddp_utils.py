@@ -63,14 +63,15 @@ def init_dist(rank, world_size):
 
     # any free port on the machine
     if "MASTER_PORT" not in os.environ:
-        os.environ["MASTER_PORT"] = "12355"
+        os.environ["MASTER_PORT"] = "12345"
     logger.info(f"os.environ['MASTER_PORT']: {os.environ['MASTER_PORT']}")
     
     # initialize process group
-    # rank = get_global_rank()  # 整个分布式集群中的全局进程编号
+    # rank = get_global_rank()
     # logger.info(f"rank: {rank}")
     # world_size = get_world_size()
     # logger.info(f"world_size: {world_size}")
+    
     if platform.system() == "Windows":
         # Disable libuv because PyTorch for Windows isn't built with support
         os.environ["USE_LIBUV"] = "0"
