@@ -41,7 +41,7 @@ def set_seed_ml(seed: int = 2025):
     np.random.seed(seed)
 
 
-def set_seed(seed: int = 2025):
+def set_seed_torch(seed: int = 2025):
     """
     设置可重复随机数
     manual_seed: https://docs.pytorch.org/docs/stable/generated/torch.cuda.manual_seed.html
@@ -51,10 +51,19 @@ def set_seed(seed: int = 2025):
     np.random.seed(seed)
     # Sets the seed for generating random numbers on all devices. Returns a torch.Generator object.
     torch.manual_seed(seed)
-    # Set the seed for generating random numbers for the current GPU.
-    torch.cuda.manual_seed(seed)
-    # Set the seed for generating random numbers on all GPUs.
-    torch.cuda.manual_seed_all(seed)
+    if torch.cuda.is_available():
+        # Set the seed for generating random numbers for the current GPU.
+        torch.cuda.manual_seed(seed)
+        # Set the seed for generating random numbers on all GPUs.
+        torch.cuda.manual_seed_all(seed)
+
+
+# TODO
+def set_seed_worker():
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
+
 
 
 def set_cudnn():
