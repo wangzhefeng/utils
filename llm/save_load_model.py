@@ -30,6 +30,22 @@ from utils.log_util import logger
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
+def save_checkpoint(epoch, model, optimizer, scheduler, model_path: str, use_ddp: bool=False):
+    """
+    模型 checkpoint 保存
+    """
+    model_state = model.module.state_dict() if use_ddp else model.state_dict()
+    optimizer_state = optimizer.state_dict()
+    scheduler_state = scheduler.state_dict()
+    state_dict = {
+        "epoch": epoch + 1,
+        "model_state_dict": model_state,
+        "optimizer_state_dict": optimizer_state if optimizer is not None else None,
+        "scheduler_state_dict": scheduler_state if scheduler is not None else None,
+    }
+    torch.save(state_dict, model_path)
+
+
 def save_model_weights(model, model_path: str):
     """
     Save model weights

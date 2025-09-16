@@ -79,26 +79,26 @@ class EarlyStopping:
         self.val_loss_min = np.inf
         self.delta = delta
 
-    def __call__(self, val_loss, epoch, model, optimizer=None, scheduler=None, model_path=""):
+    def __call__(self, epoch, val_loss, model, optimizer=None, scheduler=None, model_path=""):
         score = -val_loss
         if self.best_score is None:
             self.best_score = score
-            self.save_checkpoint(val_loss, epoch, model, optimizer, scheduler, model_path)
+            self.save_checkpoint(epoch, val_loss, model, optimizer, scheduler, model_path)
         elif score < self.best_score + self.delta:
             self.counter += 1
-            logger.info(f'Epoch: {epoch+1}, \tEarlyStopping counter: {self.counter} out of {self.patience}')
+            logger.info(f"Epoch: {epoch+1}, \tEarlyStopping counter: {self.counter} out of {self.patience}")
             if self.counter >= self.patience:
                 self.early_stop = True
         else:
             self.best_score = score
-            self.save_checkpoint(val_loss, epoch, model, optimizer, scheduler, model_path)
+            self.save_checkpoint(epoch, val_loss, model, optimizer, scheduler, model_path)
             self.counter = 0
 
-    def save_checkpoint(self, val_loss, epoch, model, optimizer=None, scheduler=None, model_path: str=""):
-        # 日志打印
+    def save_checkpoint(self, epoch, val_loss, model, optimizer, scheduler, model_path):
+        # log
         if self.verbose:
-            logger.info(f'\tEpoch: {epoch+1}, \tValidation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}). Saving model ...')
-        # 模型保存
+            logger.info(f"\tEpoch: {epoch+1}, \tValidation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}). Saving model ...")
+        # checkpoint save
         training_state = {
             "epoch": epoch + 1,
             "model": model.state_dict(),

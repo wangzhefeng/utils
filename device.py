@@ -65,6 +65,19 @@ def device_setting(verbose: bool = False):
     return device
 
 
+def tensor_core_setting():
+    if torch.cuda.is_available():
+        logger.info(f"CUDA version: {torch.version.cuda}")
+
+        capability = torch.cuda.get_device_capability()
+        if capability[0] >= 7:  # Volta (7.0+), Turing (7.5+), Ampere (8.0+), Hopper (9.0+)
+            torch.set_float32_matmul_precision("high")
+            logger.info("Uses tensor cores")
+        else:
+            logger.info("Tensor cores not supported on this GPU. Using default precision.")
+    logger.info(f"Uses tensor cores: {torch.cuda.is_available()}")
+
+
 # TODO
 def _acquire_device(use_gpu: bool=True, gpu_type: str="cuda", use_multi_gpu: bool=False, devices: str="0,1,2,3,4,5,6,7"):
     # use gpu or not
@@ -125,6 +138,7 @@ def torch_gc(device_id=""):
 # 测试代码 main 函数
 def main():
     device = device_setting(verbose=True)
+    tensor_core_setting()
 
 if __name__ == "__main__":
     main()

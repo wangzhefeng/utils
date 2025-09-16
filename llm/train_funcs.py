@@ -12,7 +12,6 @@
 # ***************************************************
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -20,40 +19,15 @@ if ROOT not in sys.path:
     sys.path.append(ROOT)
 import math
 
-
 import numpy as np
-import torch
-import torch.nn as nn
 import matplotlib.pyplot as plt
+plt.switch_backend('agg')
+import torch
 
 from utils.log_util import logger
 
-plt.switch_backend('agg')
-
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
-
-
-def select_optimizer(model, learning_rate: float, weight_decay: float):
-    """
-    optimizer
-    """
-    optimizer = torch.optim.AdamW(
-        model.parameters(), 
-        lr = learning_rate, 
-        weight_decay = weight_decay
-    )
-
-    return optimizer
-
-
-def select_criterion():
-    """
-    loss
-    """
-    criterion = nn.CrossEntropyLoss()
-
-    return criterion
 
 
 def adjust_learning_rate(optimizer, epoch, args):
@@ -167,42 +141,48 @@ def gradient_clipping(model, global_step, warmup_steps):
 
 class EarlyStopping:
     
-    def __init__(self, patience=7, verbose=False, delta=0, use_ddp=False, gpu_id=0):
+    def __init__(self, patience=7, verbose=False, delta=0, use_ddp=False, gpu=0):
         self.patience = patience
         self.verbose = verbose
         self.delta = delta
         self.use_ddp = use_ddp
-        self.gpu_id = self.gpu_id
+        self.gpu = gpu
         self.counter = 0
         self.best_score = None
         self.early_stop = False
         self.val_loss_min = np.inf
 
-    def __call__(self, epoch, val_loss, model, path):
+    def __call__(self, epoch, val_loss, model, optimizer=None, scheduler=None, model_path:str=""):
         score = -val_loss
         if self.best_score is None:
             self.best_score = score
-            self.save_checkpoint(epoch, val_loss, model, path)
+            self.save_checkpoint(epoch, val_loss, model, optimizer, scheduler, model_path)
         elif score < self.best_score + self.delta:
             self.counter += 1
-            logger.info(f"\t\t\tEpoch {epoch}: EarlyStopping counter: {self.counter} out of {self.patience}")
+            logger.info(f"\t\t\tEpoch {epoch+1}: EarlyStopping counter: {self.counter} out of {self.patience}")
             if self.counter >= self.patience:
                 self.early_stop = True
         else:
             self.best_score = score
-            self.save_checkpoint(epoch, val_loss, model, path)
+            self.save_checkpoint(epoch, val_loss, model, optimizer, scheduler, model_path)
             self.counter = 0
 
-    def save_checkpoint(self, epoch, val_loss, model, path):
+    def save_checkpoint(self, epoch, val_loss, model, optimizer, scheduler, model_path):
+        # log
         if self.verbose:
-            logger.info(f"\t\tEpoch {epoch}: Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}). Saving model ...")
+            logger.info(f"\t\tEpoch {epoch+1}: Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}). Saving model ...")
         # checkpoint save
         if not self.use_ddp:
             ckp = model.state_dict()
-            torch.save(ckp, path)
         elif self.use_ddp and self.gpu == 0:
             ckp = model.module.state_dict()
-            torch.save(ckp, path)
+        training_state = {
+            "epoch": epoch + 1,
+            "model": ckp,
+            "optmizer": optimizer.state_dict() if optimizer is not None else None,
+            "scheduler": scheduler.state_dict() if scheduler is not None else None,
+        }
+        torch.save(training_state, model_path)
         # update minimum vali loss
         self.val_loss_min = val_loss
 
