@@ -19,11 +19,10 @@ from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
-import re
 
 import torch
 
-from models.gpt2_124M import Model
+# from models.gpt2_124M import Model
 from utils.log_util import logger
 
 # global variable
@@ -54,7 +53,7 @@ def save_model_weights(model, model_path: str):
     torch.save(model.state_dict(), model_path)
 
 
-def load_model_weights(args, model_path: str, device: str):
+def load_model_weights(args, Model, model_path: str, device: str):
     """
     Load model weights
     """

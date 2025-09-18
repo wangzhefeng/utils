@@ -37,7 +37,7 @@ def load_json_data(data_path: str):
     """
     with open(data_path, "r", encoding="utf-8") as file:
         data = json.load(file)
-    print("Number of entries:", len(data))
+    logger.info(f"Number of entries: {len(data)}")
 
     return data
 
@@ -133,7 +133,7 @@ def main():
         data_name="wikitext-2-raw-v1",
         cache_dir="./dataset/pretrain",
     )
-    print(type(dataset))
+    logger.info(type(dataset))
 
 if __name__ == "__main__":
     main()
