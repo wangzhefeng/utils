@@ -41,7 +41,7 @@ def device_setting(verbose: bool = False):
         logger.info(f"{40 * '='}")
         logger.info(f"Device Info:")
         logger.info(f"{40 * '='}")
-        logger.info(f"{'GPU available':<13}: {torch.cuda.is_available() or torch.backends.mps.is_available():<13}")
+        logger.info(f"{'GPU available':<13}: {'True' if torch.cuda.is_available() or torch.backends.mps.is_available() else 'False':<13}")
         logger.info(f"{'GPU count':<13}: {torch.cuda.device_count():<13}")
     
     if torch.cuda.is_available():
