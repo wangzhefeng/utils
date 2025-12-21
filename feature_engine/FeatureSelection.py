@@ -38,6 +38,7 @@ from sklearn.feature_selection import (
     chi2,
     RFE,
     SelectFromModel,
+    SelectPercentile
 )
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import Lasso
@@ -129,6 +130,15 @@ def low_variance_feature_remove(data, rate_base = 0.0):
     data_available = sel.fit_transform(data)
 
     return data_available
+
+
+def col_filter(mtx_train, y_train, mtx_test, func=chi2, percentile=90):
+    feature_select = SelectPercentile(func, percentile=percentile)
+    feature_select.fit(mtx_train, y_train)
+    mtx_train = feature_select.transform(mtx_train)
+    mtx_test = feature_select.transform(mtx_test)
+    
+    return mtx_train, mtx_test
 
 
 def model_based_feature_selection(data, target, model = "tree", n_estimators = 50):

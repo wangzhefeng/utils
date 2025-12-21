@@ -14,22 +14,35 @@
 __all__ = []
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
-import re
-
 
 import torch
 
-from models.gpt import Model
+# from models.gpt2_124M import Model
 from utils.log_util import logger
 
 # global variable
 LOGGING_LABEL = Path(__file__).name[:-3]
+
+
+def save_checkpoint(epoch, model, optimizer, scheduler, model_path: str, use_ddp: bool=False):
+    """
+    模型 checkpoint 保存
+    """
+    model_state = model.module.state_dict() if use_ddp else model.state_dict()
+    optimizer_state = optimizer.state_dict()
+    scheduler_state = scheduler.state_dict()
+    state_dict = {
+        "epoch": epoch + 1,
+        "model_state_dict": model_state,
+        "optimizer_state_dict": optimizer_state if optimizer is not None else None,
+        "scheduler_state_dict": scheduler_state if scheduler is not None else None,
+    }
+    torch.save(state_dict, model_path)
 
 
 def save_model_weights(model, model_path: str):
@@ -40,13 +53,14 @@ def save_model_weights(model, model_path: str):
     torch.save(model.state_dict(), model_path)
 
 
-def load_model_weights(args, model_path: str, device: str):
+def load_model_weights(args, Model, model_path: str, device: str):
     """
     Load model weights
     """
     model = Model(args)
     model.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
     model.eval();
+
 
 '''
 def save_model(model, finetuned_model_path: str, choose_model: str):
@@ -66,6 +80,7 @@ def load_model(model, finetuned_model_path: str, choose_model: str, device):
     model.load_state_dict(torch.load(file_name, map_location=device, weights_only=True))
     logger.info(f"Model loaded from {file_name}")
 '''
+
 
 def save_model_optim_weights(model, optimizer, model_path: str):
     """

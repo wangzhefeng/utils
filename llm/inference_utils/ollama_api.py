@@ -22,7 +22,6 @@ import json
 import psutil
 import urllib.request
 
-
 from utils.log_util import logger
 
 # global variable

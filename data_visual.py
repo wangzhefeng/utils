@@ -440,6 +440,32 @@ def plot_distributed(df: pd.DataFrame,
         fig.get_figure().savefig(f'imgs/{img_file_name}.png', bbox_inches = 'tight', transparent = True)
 
 
+def plot_hist(df, numeric_cols):
+    """
+    数值特征分布图
+
+    Args:
+        df (_type_): _description_
+        numeric_cols (_type_): _description_
+    """
+    plt.style.use("fivethirtyeight")
+    plt.rcParams["font.size"] = 8
+    plt.figure(1, figsize=(18, 5))
+    for n, col in enumerate(numeric_cols, 1):
+        plt.subplot(1, len(numeric_cols), n)
+        plt.subplots_adjust(hspace = 0.5, wspace = 0.5)
+        sns.histplot(df[col], bins=20)
+        sns.displot(df[col])
+        plt.title(f'Distplot of {col}')
+    plt.show();
+
+
+def plot_bar(df, categorical_cols):
+    plt.figure(1, figsize = (8, 5))
+    sns.countplot(y = categorical_cols, data = df)
+    plt.show();
+
+
 
 
 # 测试代码 main 函数

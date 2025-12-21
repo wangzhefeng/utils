@@ -14,7 +14,6 @@
 __all__ = []
 
 # python libraries
-import os
 import sys
 from pathlib import Path
 ROOT = str(Path.cwd())
@@ -51,6 +50,18 @@ def time_col_distinct(df, time_col: str, time_format='%Y-%m-%d %H:%M:%S'):
     return df
 
 
+def time_col_rename(df, time_col: str, new_time_col: str=None):
+    """
+    对时间序列的时间戳列进行重命名
+    """
+    if new_time_col is not None:
+        df.rename(columns={time_col: new_time_col}, inplace=True)
+    else:
+        df.rename(columns={time_col: "time"}, inplace=True)
+
+    return df
+
+ 
 
 
 # 测试代码 main 函数

@@ -23,6 +23,7 @@ from pathlib import Path
 ROOT = str(Path.cwd())
 if ROOT not in sys.path:
     sys.path.append(ROOT)
+from importlib.metadata import version
 
 import torch
 
@@ -40,7 +41,7 @@ def device_setting(verbose: bool = False):
         logger.info(f"{40 * '='}")
         logger.info(f"Device Info:")
         logger.info(f"{40 * '='}")
-        logger.info(f"{'GPU available':<13}: {torch.cuda.is_available() or torch.backends.mps.is_available():<13}")
+        logger.info(f"{'GPU available':<13}: {'True' if torch.cuda.is_available() or torch.backends.mps.is_available() else 'False':<13}")
         logger.info(f"{'GPU count':<13}: {torch.cuda.device_count():<13}")
     
     if torch.cuda.is_available():
@@ -58,9 +59,23 @@ def device_setting(verbose: bool = False):
     if verbose:
         # logger.info(f"{'Using device':<13}: {device.type.upper():<13}")
         logger.info(f"{'Using device':<13}: {str(device):<13}")
+        logger.info(f"{'torch version':<13}: {version('torch'):<13}")
         logger.info(f"{40 * '='}")
 
     return device
+
+
+def tensor_core_setting():
+    if torch.cuda.is_available():
+        logger.info(f"CUDA version: {torch.version.cuda}")
+
+        capability = torch.cuda.get_device_capability()
+        if capability[0] >= 7:  # Volta (7.0+), Turing (7.5+), Ampere (8.0+), Hopper (9.0+)
+            torch.set_float32_matmul_precision("high")
+            logger.info("Uses tensor cores")
+        else:
+            logger.info("Tensor cores not supported on this GPU. Using default precision.")
+    logger.info(f"Uses tensor cores: {torch.cuda.is_available()}")
 
 
 # TODO
@@ -114,7 +129,7 @@ def torch_gc(device_id=""):
         with torch.cuda.device(DEVICE):  # 指定 CUDA 设备
             torch.cuda.empty_cache()  # 清空 CUDA 缓存
             torch.cuda.ipc_collect()  # 收集 CUDA 内存碎片
-    elif torch.backends.mps.is_available():
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
         torch.mps.empty_cache()
 
 
@@ -123,6 +138,7 @@ def torch_gc(device_id=""):
 # 测试代码 main 函数
 def main():
     device = device_setting(verbose=True)
+    tensor_core_setting()
 
 if __name__ == "__main__":
     main()

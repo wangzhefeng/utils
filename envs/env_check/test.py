@@ -5,7 +5,7 @@
 
 # File for internal use (unit tests)
 
-from python_environment_check import main
+from utils.envs.env_check.python_environment_check import main
 
 
 def test_main(capsys):
