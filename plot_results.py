@@ -39,7 +39,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import dates, ticker
 import seaborn as sns
-import plotly.express as px
+# import plotly.express as px
 from sklearn.model_selection import TimeSeriesSplit, cross_val_score
 from sklearn.metrics import mean_absolute_percentage_error
 
