@@ -67,7 +67,7 @@ def plot_losses_llm(train_epochs, tokens_seen, train_losses, valid_losses, label
     ax1.set_ylabel(label.capitalize())
     ax1.legend(loc="upper right")
     # only show integer labels on x-axis
-    ax1.xaxis.set_major_locator(MaxNLocator(integer=True)) 
+    ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
     # create a second x-axis for tokens seen
     ax2 = ax1.twiny()  # Create a second x-axis that shares the same y-axis
     ax2.plot(tokens_seen, train_losses, alpha = 0)  # Invisible plot for aligning ticks

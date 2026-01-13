@@ -95,10 +95,10 @@ class EarlyStopping:
             self.counter = 0
 
     def save_checkpoint(self, epoch, val_loss, model, optimizer, scheduler, model_path):
-        # log
+        # 日志打印
         if self.verbose:
             logger.info(f"\tEpoch: {epoch+1}, \tValidation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}). Saving model ...")
-        # checkpoint save
+        # 模型保存
         training_state = {
             "epoch": epoch + 1,
             "model": model.state_dict(),
