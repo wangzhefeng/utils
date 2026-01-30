@@ -279,7 +279,7 @@ def extend_weather_feature(df: pd.DataFrame, df_weather: pd.DataFrame, col_ts: s
         # 删除无用特征
         del df[col_ts]
     else:
-        weather_features = None
+        weather_features = []
     
     return df, weather_features
 
@@ -288,27 +288,28 @@ def extend_future_weather_feature(df_future: pd.DataFrame, df_weather_future: pd
     """
     未来天气数据特征构造
     """
-    # 筛选天气预测数据
-    pred_weather_features = ["pred_ssrd", "pred_ws10", "pred_tt2", "pred_rh", "pred_ps", "pred_rain"] 
-    df_weather_future = df_weather_future[[col_ts] + pred_weather_features]
-    # 删除含空值的行
-    df_weather_future.dropna(inplace=True, ignore_index=True)
-    # 数据类型转换
-    for col in pred_weather_features:
-        df_weather_future[col] = df_weather_future[col].apply(lambda x: float(x))
-    # 将预测天气数据整理到预测df中
-    df_future["rt_ssr"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_ssrd"])
-    df_future["rt_ws10"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_ws10"])
-    df_future["rt_tt2"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_tt2"])
-    df_future["cal_rh"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_rh"])
-    df_weather_future["pred_ps"] = df_weather_future["pred_ps"].apply(lambda x: x - 50.0)
-    df_future["rt_ps"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_ps"])
-    df_weather_future["pred_rain"] = df_weather_future["pred_rain"].apply(lambda x: x - 2.5)
-    df_future["rt_rain"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_rain"])
-    # features
-    weather_features = [
-        "rt_ssr", "rt_ws10", "rt_tt2", "cal_rh", "rt_ps", "rt_rain"
-    ]
+    if df_weather_future is not None:
+        # 筛选天气预测数据
+        pred_weather_features = ["pred_ssrd", "pred_ws10", "pred_tt2", "pred_rh", "pred_ps", "pred_rain"] 
+        df_weather_future = df_weather_future[[col_ts] + pred_weather_features]
+        # 删除含空值的行
+        df_weather_future.dropna(inplace=True, ignore_index=True)
+        # 数据类型转换
+        for col in pred_weather_features:
+            df_weather_future[col] = df_weather_future[col].apply(lambda x: float(x))
+        # 将预测天气数据整理到预测df中
+        df_future["rt_ssr"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_ssrd"])
+        df_future["rt_ws10"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_ws10"])
+        df_future["rt_tt2"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_tt2"])
+        df_future["cal_rh"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_rh"])
+        df_weather_future["pred_ps"] = df_weather_future["pred_ps"].apply(lambda x: x - 50.0)
+        df_future["rt_ps"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_ps"])
+        df_weather_future["pred_rain"] = df_weather_future["pred_rain"].apply(lambda x: x - 2.5)
+        df_future["rt_rain"] = df_future["time"].map(df_weather_future.set_index(col_ts)["pred_rain"])
+        # features
+        weather_features = ["rt_ssr", "rt_ws10", "rt_tt2", "cal_rh", "rt_ps", "rt_rain"]
+    else:
+        weather_features = []
     
     return df_future, weather_features
 
