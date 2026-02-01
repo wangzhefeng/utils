@@ -119,15 +119,30 @@ fore_line_plot_params = dict(
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
+def plot_train_results(y_trues_df, y_preds_df, n_per_day, path):
+    y_trues_df = y_trues_df.iloc[-2 * n_per_day:]
+    plt.figure(figsize=(25, 8))
+    plt.plot(y_trues_df["time"], y_trues_df["y"],             label='Trues', lw=2.0)
+    plt.plot(y_preds_df["time"], y_preds_df["predict_value"], label='Preds', lw=2.0, ls="-.")
+    plt.legend()
+    plt.title("模型预测预测", fontsize=14)
+    plt.xlabel("Time", fontsize=12)
+    plt.ylabel("Value", fontsize=12)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(path.joinpath('prediction.png'), bbox_inches='tight', dpi=300)
+    # plt.show();
+
+
 def predict_result_visual(preds: np.array, trues: np.array, path='./path/test.pdf'):
     """
     Results visualization
     """
     # 画布
-    fig = plt.figure(figsize=(25, 8))
+    plt.figure(figsize=(25, 8))
     # 创建折线图
-    plt.plot(trues, lw=1.2, label='Trues')
-    plt.plot(preds, lw=1.2, label='Preds', ls="-.")
+    plt.plot(trues, label='Trues', lw=1.7, )
+    plt.plot(preds, label='Preds', lw=1.7, ls="-.")
     # 增强视觉效果
     plt.legend()
     plt.xlabel("Time")
@@ -135,7 +150,7 @@ def predict_result_visual(preds: np.array, trues: np.array, path='./path/test.pd
     plt.title('Trues and Preds Timeseries Plot')
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(path, bbox_inches='tight')
+    plt.savefig(path, bbox_inches='tight', dpi=300)
     # plt.show();
 
 

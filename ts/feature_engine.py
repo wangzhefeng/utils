@@ -119,7 +119,6 @@ def extend_lag_feature(df: pd.DataFrame,
     return df_with_lags, lag_features
 
 
-# TODO
 def extend_lag_feature_univariate(df: pd.DataFrame, target: str, lags: List):
     """
     添加滞后特征
@@ -128,7 +127,7 @@ def extend_lag_feature_univariate(df: pd.DataFrame, target: str, lags: List):
     # lag features building
     for lag in lags:
         df_lags[f'{target}_{lag}'] = df_lags[target].shift(lag)
-    df_lags.dropna(inplace=True)
+    # df_lags.dropna(inplace=True)
     # features
     lag_features = [f'{target}_{lag}' for lag in lags] 
 
@@ -161,7 +160,7 @@ def extend_lag_feature_multivariate(df, exogenous_features: List, target: str, n
     ]
     # 数据合并
     df = df.reset_index()
-    df = lagged_features_df.merge(df, on = "timeStamp", how = "left")
+    df = lagged_features_df.merge(df, on = "time", how = "left")
     # 特征分割
     # pred_vars_1 = lagged_features_df.columns.str.contains(r"\(t\-")
     # pred_vars_2 = lagged_features_df.columns.str.contains(r"\(t\)")
@@ -180,10 +179,11 @@ def extend_lag_feature_multivariate(df, exogenous_features: List, target: str, n
     return df, lag_features, target_features
 
 
-def extend_datetime_feature(df: pd.DataFrame, feature_names: str):
+def extend_datetime_feature(df: pd.DataFrame, feature_names: str, freq_minutes: int):
     """
     增加时间特征
     """
+    # 时间基础特征
     feature_map = {
         "minute": lambda x: x.minute,
         "hour": lambda x: x.hour,
@@ -201,6 +201,11 @@ def extend_datetime_feature(df: pd.DataFrame, feature_names: str):
     for feature_name in feature_names:
         func = feature_map[feature_name]
         df[f"datetime_{feature_name}"] = df["time"].apply(func)
+    # 周期性特征 (将时间转换为可循环的 sin/cos 形式)
+    n_samples_per_hour = 60 // freq_minutes
+    df["datetime_minute_in_day"] = df["datetime_hour"] * n_samples_per_hour + df["datetime_minute"] / freq_minutes
+    df["datetime_minute_in_day_sin"] = np.sin(df["datetime_minute_in_day"] * (2 * np.pi / 288))
+    df["datetime_minute_in_day_cos"] = np.cos(df["datetime_minute_in_day"] * (2 * np.pi / 288))
     
     datetime_features = [col for col in df.columns if col.startswith("datetime")]
 
