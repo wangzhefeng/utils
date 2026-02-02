@@ -119,7 +119,7 @@ fore_line_plot_params = dict(
 LOGGING_LABEL = Path(__file__).name[:-3]
 
 
-def plot_train_results(y_trues_df, y_preds_df, n_per_day, path):
+def forecast_results_visual(y_trues_df, y_preds_df, n_per_day, path):
     y_trues_df = y_trues_df.iloc[-2 * n_per_day:]
     plt.figure(figsize=(25, 8))
     plt.plot(y_trues_df["time"], y_trues_df["y"],             label='Trues', lw=2.0)
