@@ -1,1 +1,0 @@
-open -n -a "Google Chrome" --args --variations-override-country=us
